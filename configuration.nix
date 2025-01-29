@@ -16,7 +16,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "Pintsize"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -94,6 +94,13 @@
     ];
   };
 
+  security.sudo.extraRules = [{
+   users = ["boerta"];
+   commands = [{ command = "ALL";
+      options = ["NOPASSWD"];
+    }];
+  }];
+
   # Install firefox.
   programs.firefox.enable = true;
   programs.waybar.enable = true;
@@ -114,6 +121,10 @@
    remotePlay.openFirewall = true;
    dedicatedServer.openFirewall = true;
    localNetworkGameTransfers.openFirewall = true;
+   package = pkgs.steam.override {
+    extraLibraries = pkgs: [ pkgs.xorg.libxcb ];
+   };
+   extraCompatPackages = [ pkgs.proton-ge-bin ];
   };
 
   # Allow unfree packages
