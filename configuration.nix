@@ -10,7 +10,6 @@
       ./hardware-configuration.nix
     ];
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -47,14 +46,19 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
   services.xserver.displayManager.gdm.wayland = true;
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
   };
+
+  programs.river = {
+    enable = true;
+    xwayland.enable = true;
+  };
+  services.xserver.windowManager.herbstluftwm.enable = true;
+
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -66,7 +70,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -91,6 +95,7 @@
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
     #  thunderbird
+      discord
     ];
   };
 
@@ -153,7 +158,6 @@
    wl-clipboard
    killall
    gparted
-   discord
   ];
 
   environment.variables.EDITOR = "vim";
@@ -185,4 +189,5 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 }
