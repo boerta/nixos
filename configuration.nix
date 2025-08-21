@@ -10,6 +10,9 @@
       ./hardware-configuration.nix
     ];
 
+  nix.gc.automatic = true;
+  nix.gc.dates = "daily";
+  nix.gc.options = "--delete-older-than 7d";
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -45,9 +48,9 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = true;
+  services.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.displayManager.gdm.wayland = true;
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -57,7 +60,10 @@
     enable = true;
     xwayland.enable = true;
   };
-  services.xserver.windowManager.herbstluftwm.enable = true;
+  services.xserver.windowManager.herbstluftwm = {
+    enable = true;
+    configFile = "/home/boerta/.config/herbstluftwm/autostart";
+  };
 
 
   # Configure keymap in X11
@@ -85,19 +91,29 @@
     #media-session.enable = true;
   };
 
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  services.flatpak.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.boerta = {
     isNormalUser = true;
     description = "Bjørn Erik Lømo";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.fish;
     packages = with pkgs; [
     #  thunderbird
       discord
+      stow
+      dos2unix
+      lutris
+      freecad
+      prusa-slicer
+      jdk
+      forge-mtg
+      libreoffice
     ];
   };
+
+  programs.fish.enable = true;
 
   security.sudo.extraRules = [{
    users = ["boerta"];
@@ -158,7 +174,28 @@
    wl-clipboard
    killall
    gparted
-  ];
+   rxvt-unicode
+   dmenu
+   i3lock
+   arandr
+   autorandr
+   polybar
+   xdo
+   xorg.xmodmap
+   fish
+   flatpak-builder
+   SDL2
+   SDL2_mixer
+   SDL2_image
+   SDL2_ttf
+   libpng
+   boost
+   spdlog
+   cmake
+   gnumake
+   ];
+
+  virtualisation.vmware.host.enable = true;
 
   environment.variables.EDITOR = "vim";
 
@@ -190,4 +227,16 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
+
+  services.xserver.displayManager = {
+  session = [
+    { manage = "desktop";
+      name = "herbstluft";
+      start = ''
+        ${pkgs.herbstluftwm}/bin/herbstluftwm --locked &
+        waitPID=$!
+      '';
+    }
+  ];
+};
 }

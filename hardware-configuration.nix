@@ -29,10 +29,10 @@
       fsType = "ext4";
     };
 
-  fileSystems."/home/boerta/steam/lib2" =
-    { device = "/dev/disk/by-uuid/3A86D8E086D89DA7";
-      fsType = "ntfs3";
-    };
+#  fileSystems."/home/boerta/steam/lib2" =
+#    { device = "/dev/disk/by-uuid/3A86D8E086D89DA7";
+#      fsType = "ntfs3";
+#    };
 
   swapDevices =
     [ { device = "/dev/disk/by-uuid/4f8182fd-a88f-417d-87bb-ee5eb909c83a"; }
